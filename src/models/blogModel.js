@@ -1,0 +1,52 @@
+const mongoose = require('mongoose');
+const shortid = require('shortid');
+
+const blogSchema = new mongoose.Schema({
+    _id: {
+        type: String,
+        default: shortid.generate,
+    },
+    title: {
+        type: String,
+        required: true,
+    },
+    description: {
+        type: String,
+        required: true,
+    },
+    author:{
+        type: String,
+        required: true,
+    },
+    createdAt:{
+        type: Date,
+        required: true,
+        default: Date.now,
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now,     
+    },
+    publishedAt: {
+        type: Date,
+        default: Date.now,
+    },
+    state: {
+        type: String,
+        default: 'draft',
+    },
+
+    blogImage: {
+        type: Image,
+        required: true,
+    },
+});
+
+// before save
+blogSchema.pre('save', function (next){
+    this.updatedAt = new Date();
+    next();
+});
+
+const Blog = mongoose.model('Blog', blogSchema);
+module.exports = Blog;
