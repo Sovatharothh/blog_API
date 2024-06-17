@@ -16,7 +16,7 @@ const registerUser = async (req, res) =>{
     try {
         let existingUser = await User.findOne({email});
         if (existingUser){
-            return res.status(400).json({message: 'User alr exits with this email'});
+            return res.status(400).json({status: 400, message: 'User alr exits with this email'});
         }
 
         // hash the password
@@ -45,7 +45,7 @@ const registerUser = async (req, res) =>{
 
     } catch (error) {
         console.error('Error registering user:', error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ status: 500, message: 'Server error' });
     }
 };
 
@@ -56,13 +56,13 @@ const userLogin = async (req, res)=>{
         // check if user exist
         const user = await User.findOne({email});
         if(!user){
-            return res.status(404).json({message: 'User not found TT'});
+            return res.status(404).json({status: 404, message: 'User not found TT'});
         }
 
         // check if the password is valid
         const isValidPassword = await user.isValidPassword(password);
         if(!isValidPassword){
-            return res.status(404).json({message: 'Invalid password TT'});
+            return res.status(404).json({status: 404, message: 'Invalid password TT'});
         }
 
         // generate jwt token
@@ -75,7 +75,7 @@ const userLogin = async (req, res)=>{
         
     }catch(error){
         console.error('Error logging in user', error);
-        res.status(500).json({message: 'Sever error'});
+        res.status(500).json({status: 500, message: 'Sever error'});
 
     }
 };
