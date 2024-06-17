@@ -90,9 +90,30 @@ const resetPassword = async (req, res)=>{
 
     const { email, newPassword } = req.body;
     try{
-        
+        // find user by email
+        let user = await User.findOne({email});
+        if(!user){
+            return res.status(404).json({message: 'User not found TT'});
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // update new password
+        user.password = hashedPassword;
+        await user.save();
+
+        res.status(200).json({message: 'Password reset successfully'});
 
     }catch(error){
+        console.error('Error resetting new password', error);
+        res.status(500).json({message: 'Server error'});
+
 
     }
-}
+};
+
+module.exports = {
+    registerUser,
+    userLogin,
+    resetPassword,
+};
