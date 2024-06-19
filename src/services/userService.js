@@ -125,7 +125,7 @@ const refreshToken = asyncHandler(async(req, res)=>{
     const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
     const user = await User.findById(decoded.userId);
     if (!user){
-        return res.status(404).json({status: 404, message: 'Invalid token'});
+        return res.status(403).json({status: 403, message: 'Invalid token'});
 
     }
 
