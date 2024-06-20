@@ -7,7 +7,7 @@ const generateAccessToken = (user) => {
     return jwt.sign(
         { userId: user._id, email: user.email},
         process.env.JWT_SECRET,
-        { expiresIn: '15m' }
+        { expiresIn: '1h' }
     );
 };
 
@@ -38,7 +38,7 @@ const registerUser = async ({ firstName, lastName, email, password, profileImage
 
         return { user: newUser, accessToken, refreshToken };
     } catch (error) {
-        throw new Error(error.message); // Propagate error to controller
+        throw new Error(error.message); 
     }
 };
 
@@ -60,7 +60,7 @@ const userLogin = async (email, password) => {
 
         return { user, accessToken, refreshToken };
     } catch (error) {
-        throw new Error(error.message); // Propagate error to controller
+        throw new Error(error.message); 
     }
 };
 
@@ -78,7 +78,7 @@ const resetPassword = async (email, newPassword) => {
 
         return { status: 200, message: 'Password reset successfully' };
     } catch (error) {
-        throw new Error(error.message); // Propagate error to controller
+        throw new Error(error.message); 
     }
 };
 
@@ -98,7 +98,7 @@ const refreshToken = async (token) => {
         const accessToken = generateAccessToken(user);
         return { accessToken };
     } catch (error) {
-        throw new Error(error.message); // Propagate error to controller
+        throw new Error(error.message); 
     }
 };
 

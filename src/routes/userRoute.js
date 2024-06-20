@@ -1,7 +1,6 @@
 const express = require('express');
 const { check, validationResult } = require('express-validator');
 const { registerUser, userLogin, resetPassword, refreshAccessToken } = require('../controllers/userController');
-const { validateRequiredFields } = require('../middleware/userMiddleware');
 
 const router = express.Router();
 
@@ -11,19 +10,19 @@ router.post('/register', [
     check('lastName', 'Last name is required').notEmpty(),
     check('email', 'Please include a valid email').isEmail(),
     check('password', 'Password must be 6 or more characters').isLength({ min: 6 }),
-], validateRequiredFields('firstName', 'lastName', 'email', 'password'), registerUser);
+], registerUser);
 
 // login api
 router.post('/login', [
     check('email', 'Please include a valid email').isEmail(),
     check('password', 'Password is required').exists(),
-], validateRequiredFields('email', 'password'), userLogin);
+], userLogin);
 
 // reset new password api
 router.post('/reset-password', [
     check('email', 'Please include a valid email').isEmail(),
     check('newPassword', 'New password must be 6 or more characters').isLength({ min: 6 }),
-], validateRequiredFields('email', 'newPassword'), resetPassword);
+], resetPassword);
 
 // refresh token api
 router.post('/refresh-token', (req, res, next) => {

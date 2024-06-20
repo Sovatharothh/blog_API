@@ -5,12 +5,16 @@ const { validationResult } = require('express-validator');
 const dotenv = require('dotenv');
 const User = require('../models/userModel');
 const userService = require('../services/userService');
-const { validateRequiredFields } = require('../middleware/userMiddleware');
 
 dotenv.config();
 
 // register new user
 const registerUser = asyncHandler(async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const { firstName, lastName, email, password, profileImage } = req.body;
 
     try {
@@ -24,9 +28,13 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 });
 
-
 // user login
 const userLogin = asyncHandler(async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const { email, password } = req.body;
 
     try {
@@ -39,6 +47,11 @@ const userLogin = asyncHandler(async (req, res) => {
 
 // reset new password
 const resetPassword = asyncHandler(async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const { email, newPassword } = req.body;
 
     try {
@@ -48,7 +61,6 @@ const resetPassword = asyncHandler(async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 });
-
 
 // refresh token
 const refreshAccessToken = asyncHandler(async (req, res) => {
@@ -63,8 +75,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
-    registerUser: validateRequiredFields('firstName', 'lastName', 'email', 'password')(registerUser),
-    userLogin: validateRequiredFields('email', 'password')(userLogin),
-    resetPassword: validateRequiredFields('email', 'newPassword')(resetPassword),
+    registerUser,
+    userLogin,
+    resetPassword,
     refreshAccessToken,
 };
