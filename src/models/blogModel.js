@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const shortid = require('shortid');
 
 const blogSchema = new mongoose.Schema({
-    _id: {
+    blogId: {
         type: String,
         default: shortid.generate,
     },
@@ -30,10 +30,6 @@ const blogSchema = new mongoose.Schema({
     publishedAt: {
         type: Date,
         default: Date.now,
-    },
-    state: {
-        type: String,
-        default: 'draft',
     },
 
     blogImage: {
