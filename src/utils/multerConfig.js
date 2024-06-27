@@ -1,22 +1,36 @@
 // utils/multerConfig.js
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
-// Configure storage settings
+// Create directories if they don't exist
+const createDirectory = (dir) => {
+    if (!fs.existsSync(dir)){
+        fs.mkdirSync(dir, { recursive: true });
+    }
+};
+
+// file destination
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        // Set the destination for uploaded files
-        cb(null, 'uploads/');
+        let uploadDir = 'uploads/';
+
+        if (file.fieldname === 'profileImage') {
+            uploadDir += 'profileImage/';
+        } else if (file.fieldname === 'blogImage') {
+            uploadDir += 'blogImage/';
+        }
+
+        createDirectory(uploadDir);
+        cb(null, uploadDir);
     },
     filename: function (req, file, cb) {
-        // Set the file name for uploaded files
         cb(null, `${Date.now()}-${file.originalname}`);
     }
 });
 
 // Configure file filter to validate file types
 const fileFilter = (req, file, cb) => {
-    // Allow only specific file types (e.g., images)
     const allowedFileTypes = /jpeg|jpg|png|gif/;
     const extname = allowedFileTypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = allowedFileTypes.test(file.mimetype);
@@ -28,7 +42,7 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
-// Set up Multer middleware
+// Multer middleware
 const upload = multer({
     storage: storage,
     limits: { fileSize: 1024 * 1024 * 5 }, // Limit file size to 5MB
