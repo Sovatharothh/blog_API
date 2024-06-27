@@ -1,10 +1,10 @@
 const express = require('express');
-const { check, validationResult } = require('express-validator');
+const { check } = require('express-validator');
 const { registerUser, userLogin, resetPassword, refreshAccessToken } = require('../controllers/userController');
 
 const router = express.Router();
 
-// register api
+// Register API
 router.post('/register', [
     check('firstName', 'First name is required').notEmpty(),
     check('lastName', 'Last name is required').notEmpty(),
@@ -12,19 +12,19 @@ router.post('/register', [
     check('password', 'Password must be 6 or more characters').isLength({ min: 6 }),
 ], registerUser);
 
-// login api
+// Login API
 router.post('/login', [
     check('email', 'Please include a valid email').isEmail(),
     check('password', 'Password is required').exists(),
 ], userLogin);
 
-// reset new password api
+// Reset New Password API
 router.post('/reset-password', [
     check('email', 'Please include a valid email').isEmail(),
     check('newPassword', 'New password must be 6 or more characters').isLength({ min: 6 }),
 ], resetPassword);
 
-// refresh token api
+// Refresh Token API
 router.post('/refresh-token', (req, res, next) => {
     const token = req.headers.authorization;
     if (!token) {
