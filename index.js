@@ -3,6 +3,8 @@ const dotenv = require('dotenv');
 const connectDB = require('./src/data/connect');
 const userRoute = require('./src/routes/userRoute'); 
 const blogRoute = require('./src/routes/blogRoute');
+const uploadRoute = require('./src/routes/uploadRoute');
+
 
 dotenv.config();
 
@@ -15,6 +17,7 @@ app.use(express.json());
 // Routes
 app.use('/api/v1/users', userRoute);
 app.use('/api/v1/blogs', blogRoute);
+app.use('/api/v1/upload', uploadRoute);
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
