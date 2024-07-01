@@ -48,7 +48,7 @@ JWT_REFRESH_SECRET="your_jwt_refresh_secret"
 
 - **POST `/api/v1/users/refresh-token`**: Reset user token.
   
-### Expenses
+### Blogs
 
 - **POST `/api/v1/blogs`**: Create a new blog.
   
