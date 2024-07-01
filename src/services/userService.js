@@ -29,8 +29,7 @@ const registerUser = async ({ firstName, lastName, email, password, profileImage
             throw new Error('User already exists with this email');
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ firstName, lastName, email, password: hashedPassword, profileImage });
+        const newUser = new User({ firstName, lastName, email, password: password, profileImage });
         await newUser.save();
 
         const accessToken = generateAccessToken(newUser);
@@ -47,11 +46,13 @@ const registerUser = async ({ firstName, lastName, email, password, profileImage
 const userLogin = async (email, password) => {
     try {
         const user = await User.findOne({ email });
+        
         if (!user) {
             throw new Error('User not found');
         }
 
-        const isValidPassword = await bcrypt.compare(password, user.password);
+        const isValidPassword = await user.isValidPassword(password);
+  
         if (!isValidPassword) {
             throw new Error('Invalid password');
         }
