@@ -1,8 +1,17 @@
 const express = require('express');
-const { check } = require('express-validator');
+const { check, validationResult } = require('express-validator');
 const { registerUser, userLogin, resetPassword, refreshAccessToken } = require('../controllers/userController');
 
 const router = express.Router();
+
+// Middleware to handle validation errors
+const handleValidationErrors = (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    next();
+};
 
 // Register API
 router.post('/register', [
@@ -10,19 +19,20 @@ router.post('/register', [
     check('lastName', 'Last name is required').notEmpty(),
     check('email', 'Please include a valid email').isEmail(),
     check('password', 'Password must be 6 or more characters').isLength({ min: 6 }),
-], registerUser);
+    check('profileImage', 'Please upload your profile image').notEmpty(),
+], handleValidationErrors, registerUser);
 
 // Login API
 router.post('/login', [
     check('email', 'Please include a valid email').isEmail(),
     check('password', 'Password is required').exists(),
-], userLogin);
+], handleValidationErrors, userLogin);
 
 // Reset New Password API
 router.post('/reset-password', [
     check('email', 'Please include a valid email').isEmail(),
     check('newPassword', 'New password must be 6 or more characters').isLength({ min: 6 }),
-], resetPassword);
+], handleValidationErrors, resetPassword);
 
 // Refresh Token API
 router.post('/refresh-token', (req, res, next) => {

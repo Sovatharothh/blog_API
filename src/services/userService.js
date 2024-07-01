@@ -38,6 +38,7 @@ const registerUser = async ({ firstName, lastName, email, password, profileImage
 
         return { user: newUser, accessToken, refreshToken };
     } catch (error) {
+        console.log(error);
         throw new Error(error.message); 
     }
 };

@@ -5,7 +5,9 @@ const validateFields = require('../utils/validateFields');
 
 // create new blog
 const createBlog = asyncHandler(async (req, res, next) => {
-    const { title, description, author, blogImage } = req.body;
+    const { title, description, author } = req.body;
+    const blogImage = req.file ? req.file.path : null;
+
 
     // validate required fields
     const fieldsToValidate = [
@@ -68,7 +70,9 @@ const getBlogById = asyncHandler(async(req, res, next)=> {
 
 // update blog by ID
 const updateBlogById = asyncHandler(async(req, res, next) => {
-    const {title, description, author, blogImage } = req.body;
+    const {title, description, author} = req.body;
+    const blogImage = req.file ? req.file.path : req.body.blogImage;
+
 
     // validate required fields
     const fieldsToValidate = [

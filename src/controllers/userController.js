@@ -24,6 +24,7 @@ const registerUser = asyncHandler(async (req, res) => {
         if (error.name === 'ValidationError') {
             return res.status(400).json({ status: 400, message: error.message });
         }
+        console.log(error);
         res.status(500).json({ status: 500, message: 'Server error' });
     }
 });
@@ -41,6 +42,7 @@ const userLogin = asyncHandler(async (req, res) => {
         const { user, accessToken, refreshToken } = await userService.userLogin(email, password);
         res.status(200).json({ user, accessToken, refreshToken });
     } catch (error) {
+        console.log(error);
         res.status(400).json({ message: error.message });
     }
 });
