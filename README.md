@@ -1,6 +1,6 @@
 # Blog API
 
-This is a RESTful API for a blogging platform. The API allows users to register, login, reset passwords, and refresh tokens. It also includes functionality for handling user authentication and authorization using JWT tokens.
+This is a RESTful API for a blogging platform. The API allows users to register, login, reset passwords, and refresh tokens. It also includes functionality for handling user authentication and authorization using JWT tokens before interacting with the blogs through create, delete, update and get all blogs.
 
 
 ## Installation
