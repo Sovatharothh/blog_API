@@ -3,12 +3,15 @@ const Blog = require('../models/blogModel');
 const AppError = require('../utils/AppError');
 const validateFields = require('../utils/validateFields');
 
+
 // create new blog
 const createBlog = asyncHandler(async (req, res, next) => {
     const { title, description, author } = req.body;
-    const blogImage = req.file ? req.file.path : null;
+    const blogImage = req.file ? req.file.path : req.body.blogImage;
 
-
+    console.log("Received body data:", req.body);
+    console.log("Received file data:", req.file);
+    
     // validate required fields
     const fieldsToValidate = [
         { name: 'title', value: title },
@@ -118,13 +121,14 @@ const deleteBlogById = asyncHandler(async(req, res, next) => {
 
     }
 
-    await blog.remove();
+    await Blog.deleteOne({ _id: req.params.id });
 
-    res.status(204).json({
-        status: 204,
+    res.status(200).json({
+        status: 200,
         message: 'Blog deleted successfulluy',
     });
 });
+
 
 module.exports = {
     createBlog,

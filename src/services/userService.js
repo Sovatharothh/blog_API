@@ -20,25 +20,24 @@ const generateRefreshToken = (user) => {
     );
 };
 
-
 // register new user
 const registerUser = async ({ firstName, lastName, email, password, profileImage }) => {
     try {
         let existingUser = await User.findOne({ email });
         if (existingUser) {
-            throw new Error('User already exists with this email');
+            return { status: 409, message: 'User already exists with this email' };
         }
 
-        const newUser = new User({ firstName, lastName, email, password: password, profileImage });
+        const newUser = new User({ firstName, lastName, email, password, profileImage });
         await newUser.save();
 
         const accessToken = generateAccessToken(newUser);
         const refreshToken = generateRefreshToken(newUser);
 
-        return { user: newUser, accessToken, refreshToken };
+        return { status: 201, message: 'User registered successfully', user: newUser, accessToken, refreshToken };
     } catch (error) {
         console.log(error);
-        throw new Error(error.message); 
+        return { status: 500, message: error.message };
     }
 };
 
@@ -46,23 +45,21 @@ const registerUser = async ({ firstName, lastName, email, password, profileImage
 const userLogin = async (email, password) => {
     try {
         const user = await User.findOne({ email });
-        
         if (!user) {
-            throw new Error('User not found');
+            return { status: 404, message: 'User not found' };
         }
 
         const isValidPassword = await user.isValidPassword(password);
-  
         if (!isValidPassword) {
-            throw new Error('Invalid password');
+            return { status: 401, message: 'Invalid password' };
         }
 
         const accessToken = generateAccessToken(user);
         const refreshToken = generateRefreshToken(user);
 
-        return { user, accessToken, refreshToken };
+        return { status: 200, message: 'Login successful', user, accessToken, refreshToken };
     } catch (error) {
-        throw new Error(error.message); 
+        return { status: 500, message: error.message };
     }
 };
 
@@ -71,7 +68,7 @@ const resetPassword = async (email, newPassword) => {
     try {
         let user = await User.findOne({ email });
         if (!user) {
-            throw new Error('User not found');
+            return { status: 404, message: 'User not found' };
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -80,7 +77,7 @@ const resetPassword = async (email, newPassword) => {
 
         return { status: 200, message: 'Password reset successfully' };
     } catch (error) {
-        throw new Error(error.message); 
+        return { status: 500, message: error.message };
     }
 };
 
@@ -88,19 +85,19 @@ const resetPassword = async (email, newPassword) => {
 const refreshToken = async (token) => {
     try {
         if (!token) {
-            throw new Error('No token provided');
+            return { status: 400, message: 'No token provided' };
         }
 
         const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
         const user = await User.findById(decoded.userId);
         if (!user) {
-            throw new Error('Invalid token');
+            return { status: 401, message: 'Invalid token' };
         }
 
         const accessToken = generateAccessToken(user);
-        return { accessToken };
+        return { status: 200, accessToken };
     } catch (error) {
-        throw new Error(error.message); 
+        return { status: 500, message: error.message };
     }
 };
 
